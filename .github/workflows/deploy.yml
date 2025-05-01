@@ -3,7 +3,7 @@ name: Build and Deploy Spring Boot App to ECS
 on:
   push:
     branches:
-      - dev
+      - main
 
 permissions:
   id-token: write
@@ -44,8 +44,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./mvnw sonar:sonar \
-            -Dsonar.projectKey=springboot-app \
-            -Dsonar.projectName="Spring Boot App" \
+            -Dsonar.projectKey=springboot-app-nadia \
+            -Dsonar.projectName="springboot-app-nadia" \
             -Dsonar.host.url=https://sonarqube.hlsgroup.com.mx \
             -Dsonar.token=$SONAR_TOKEN
 
@@ -57,7 +57,7 @@ jobs:
           sleep 10
 
           STATUS=$(curl -s -u $SONAR_TOKEN: \
-            "https://sonarqube.hlsgroup.com.mx/api/qualitygates/project_status?projectKey=springboot-app" \
+            "https://sonarqube.hlsgroup.com.mx/api/qualitygates/project_status?projectKey=springboot-app-nadia" \
             | jq -r '.projectStatus.status')
 
           echo "Quality Gate Status: $STATUS"
@@ -70,7 +70,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::045997866959:role/GitHubActionsOIDC
+          role-to-assume: arn:aws:iam::058264329693:role/GitHubActionsOIDC
           aws-region: ${{ env.AWS_REGION }}
 
       # Get Account ID
